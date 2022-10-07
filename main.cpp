@@ -11,7 +11,7 @@ int main() {
     std::vector<int> power;
     std::vector<int> drive;
     std::vector<int> car_type;
-    const std::string data_path = "/Users/liaolizhou/Desktop/研究生/研究生学生工作/华为杯数学建模2022/code/jobshop/data/data1.csv";
+    const std::string data_path = "/Users/liaolizhou/Desktop/研究生/研究生学生工作/华为杯数学建模2022/code/jobshop/JobShop/data/data.txt";
     std::fstream file;
     file.open(data_path, ios::in);
     if (!file.is_open()) {

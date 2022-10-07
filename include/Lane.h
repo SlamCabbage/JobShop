@@ -29,7 +29,7 @@ namespace job_shop {
 
     public:
         // 更新一秒后的状态
-        void UpdateLaneTime();
+        void UpdateLaneTime(bool revsere=false);
         // 添加新的车身
         void AddCar(int index, int car_id);
         // 翻转车身

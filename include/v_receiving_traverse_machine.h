@@ -5,6 +5,7 @@
 #ifndef PBS_V_RECEIVING_TRAVERSE_MACHINE_H
 #define PBS_V_RECEIVING_TRAVERSE_MACHINE_H
 #include "iostream"
+#include "Lane.h"
 
 
 namespace job_shop {
@@ -22,7 +23,7 @@ namespace job_shop {
     public:
 
         //判断当前时刻处于什么任务阶段，并分配新的任务
-        void receiving_judge_task_phase();
+        void receiving_judge_task_phase(Lane& ls);
 
     };
 

@@ -6,61 +6,77 @@
 
 namespace job_shop {
     // 更新一秒后的状态
-    void Lane::UpdateLaneTime() {
+    void Lane::UpdateLaneTime(bool revsere) {
         // 正向车道
-        for (int i = 0; i < 6; ++i) {
-            for (int j = 1; j <= 9; ++j) {
-                if (lane_time(i, j) != -1) {
-                    if (lane_time(i, j) == 8 && lane_time(i, j - 1) == -1) {
+        if (!revsere) {
+            for (int i = 0; i < 6; ++i) {
+                for (int j = 1; j <= 9; ++j) {
+                    if (lane_time(i, j) != -1) {
+                        if (lane_time(i, j) == 8 && lane_time(i, j - 1) == -1) {
+                            // 时间
+                            lane_time(i, j) = -1;
+                            lane_time(i, j - 1) = 0;
+                            // 车辆
+                            lane_car(i, j - 1) = lane_car(i, j);
+                            lane_car(i, j) = 0;
+                            if (j - 1 == 0) {
+                                // 如果新到的为1号车位，那么将其作为阻塞
+                                lane_time(i, j - 1) = -2;
+                                rightmost_car.push({lane_car(i, j - 1), {i, j - 1}});
+                            }
+                            if (j == 9) {
+                                lane_occupancy(i) = 0;
+                            }
+                        } else if (lane_time(i, j) == -2 && lane_time(i, j - 1) == -1) {
+                            // 占用解除了
+                            lane_time(i, j) = 0;
+                        } else if (lane_time(i, j) < 8 && lane_time(i, j) >= 0
+                                   && lane_time(i, j - 1) < 8 && lane_time(i, j - 1) >= 0) {
+                            // 前方有一个车，但是前方的车并未阻塞
+                            lane_time(i, j)++;
+                        } else if (lane_time(i, j) < 8 && lane_time(i, j) >= 0 && lane_time(i, j - 1) == -1) {
+                            // 前方无车，当前时刻还不能跳格
+                            lane_time(i, j)++;
+                        } else if (lane_time(i, j) < 8 && lane_time(i, j) >= 0 && lane_time(i, j - 1) == -2) {
+                            // 前方有车，前方阻塞
+                            lane_time(i, j) = -2;
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int j = 8; j >= 0; --j) {
+                if (lane_time(6, j) != -1) {
+                    if (lane_time(6, j) == 8 && lane_time(6, j + 1) == -1) {
                         // 时间
-                        lane_time(i, j) = -1;
-                        lane_time(i, j - 1) = 0;
+                        lane_time(6, j) = -1;
+                        lane_time(6, j + 1) = 0;
                         // 车辆
-                        lane_car(i, j - 1) = lane_car(i, j);
-                        lane_car(i, j) = 0;
-                        if (j - 1 == 0) {
-                            rightmost_car.push({lane_car(i, j - 1), {i, j - 1}});
+                        lane_car(6, j + 1) = lane_car(6, j);
+                        lane_car(6, j) = 0;
+                        if (j + 1 == 9) {
+                            lane_time(6, j + 1) = -2;
+                            leftmost_car.push({lane_car(6, j + 1), {6, j + 1}});
                         }
-                        if (j == 9) {
-                            lane_occupancy(i) = 0;
+                        if (j == 0) {
+                            lane_occupancy(6) = 0;
                         }
-                    } else if (lane_time(i, j) == -2 && lane_time(i, j - 1) == -1) {
-                        // 占用解除了
-                        lane_time(i, j) = 0;
-                    } else if (lane_time(i, j) < 8 && lane_time(i, j) >= 0 && lane_time(i, j + 1) != -1) {
-                        lane_time(i, j) = -2;
-                    } else if (lane_time(i, j) < 8 && lane_time(i, j) >= 0 && lane_time(i, j + 1) == -1) {
-                        lane_time(i, j)++;
+                    } else if (lane_time(6, j) == -2 && lane_time(6, j + 1) == -1) {
+                        // 占用解除
+                        lane_time(6, j) = 0;
+                    } else if (lane_time(6, j) < 8 && lane_time(6, j) >= 0 && lane_time(6, j + 1) == -2) {
+                        lane_time(6, j) = -2;
+                    } else if (lane_time(6, j) < 8 && lane_time(6, j) >= 0 && lane_time(6, j + 1) == -1) {
+                        lane_time(6, j)++;
+                    } else if (lane_time(6, j) < 8 && lane_time(6, j) >= 0 &&
+                               lane_time(6, j + 1) < 8 && lane_time(6, j + 1) >= 0) {
+                        lane_time(6, j)++;
                     }
                 }
             }
         }
+
         // 反向车道
-        for (int j = 8; j >= 0; --j) {
-            if (lane_time(6, j) != -1) {
-                if (lane_time(6, j) == 8 && lane_time(6, j + 1) == -1) {
-                    // 时间
-                    lane_time(6, j) = -1;
-                    lane_time(6, j + 1) = 0;
-                    // 车辆
-                    lane_car(6, j + 1) = lane_car(6, j);
-                    lane_car(6, j) = 0;
-                    if (j + 1 == 9) {
-                        leftmost_car.push({lane_car(6, j + 1), {6, j + 1}});
-                    }
-                    if (j == 0) {
-                        lane_occupancy(6) = 0;
-                    }
-                } else if (lane_time(6, j) == -2 && lane_time(6, j + 1) == -1) {
-                    // 时间
-                    lane_time(6, j) = 0;
-                } else if (lane_time(6, j) <= 8 && lane_time(6, j) >= 0 && lane_time(6, j - 1) != -1) {
-                    lane_time(6, j) = -2;
-                } else if (lane_time(6, j) <= 8 && lane_time(6, j) >= 0 && lane_time(6, j - 1) == -1) {
-                    lane_time(6, j)++;
-                }
-            }
-        }
     }
     // 添加新的车身
     void Lane::AddCar(int index, int car_id) {
