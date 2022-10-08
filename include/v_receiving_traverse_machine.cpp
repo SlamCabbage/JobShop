@@ -4,6 +4,7 @@
 
 #include "v_receiving_traverse_machine.h"
 
+namespace job_shop {
 // 从涂装-PBS进车道取车任务id
 enum receiving_task_id {
   pick_up_from_0_to_1, // 从涂装-PBS进车道取车送至1车道
@@ -25,7 +26,8 @@ enum receiving_task_id {
 // 任务消耗时间
 int receiving_task_id_time[] = {18, 12, 6, 0, 12, 18, 24, 18, 12, 6, 12, 18, 0};
 
-bool job_shop::v_receiving_traverse_machine::judge_receiver_task_phase() {
+bool job_shop::v_receiving_traverse_machine::judge_receiver_task_phase(
+    Lane &lane_in) {
   this->receiving_t_now++;
 
   // 当前任务为前6个，取涂装-PBS进车口的车放入某车道
@@ -102,3 +104,4 @@ int job_shop::v_receiving_traverse_machine::get_rand_number(int a, int b) {
 
   return r;
 }
+} // namespace job_shop

@@ -4,6 +4,7 @@
 
 #include "v_delivery_traverse_machine.h"
 
+namespace job_shop {
 // 从涂装-PBS进车道取车任务id
 enum delivery_task_id {
   pick_up_from_1_to_0, // 从1车道取车送至PBS-总装送车道0
@@ -26,7 +27,7 @@ enum delivery_task_id {
 int delivery_task_id_time[] = {18, 12, 6, 0, 12, 18, 24, 18, 12, 6, 12, 18, 0};
 
 // 判断任务状态,有任务返回1，没有任务返回0
-bool job_shop::v_delivery_traverse_machine::judge_delivery_task_phase(
+bool v_delivery_traverse_machine::judge_delivery_task_phase(
     Lane &lane_in) { //
   this->delivery_t_now++;
 
@@ -157,7 +158,7 @@ bool job_shop::v_delivery_traverse_machine::judge_delivery_task_phase(
   return 0;
 }
 
-void job_shop::v_delivery_traverse_machine::assign_task(
+void v_delivery_traverse_machine::assign_task(
     std::queue<std::pair<int, std::pair<int, int>>> &q_in,
     std::vector<int> &car_type_) {
 
@@ -174,3 +175,4 @@ void job_shop::v_delivery_traverse_machine::assign_task(
   // TODO
   // 读取已经送走的车的队列,根据来车类型以及队列分配任务，决定是否送到返回道
 }
+} // namespace job_shop
