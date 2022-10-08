@@ -26,7 +26,7 @@ public:
 
 public:
   // 判断当前时刻处于什么任务阶段，并分配新的任务
-  bool judge_receiver_task_phase();
+  bool judge_receiver_task_phase(Lane &lane_in);
 
   // 生成一个范围在【a,b）内的整数，包含a
   int get_rand_number(int a, int b);

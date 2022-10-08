@@ -39,7 +39,7 @@ bool v_delivery_traverse_machine::judge_delivery_task_phase(
         delivery_task_id_time[this->delivery_task_id_now] / 2) {
       // 执行取车动作，更新车道信息，更新delivery_carry_car_id
       auto temp = lane_in.rightmost_car.front();
-      this->delivery_task_id_now = temp.first;
+      this->delivery_carry_car_id= temp.first;
 
       lane_in.DeleteCar(temp.second.first, temp.second.second);
 
@@ -71,9 +71,9 @@ bool v_delivery_traverse_machine::judge_delivery_task_phase(
 
     // 送车横移机到达该取车车道
     if (this->delivery_t_now ==
-        (delivery_task_id_time[delivery_task_id_now] - 6) / 2) {
+        (delivery_task_id_time[delivery_task_id_now] - 3) / 2) {
 
-      std::cout << "到达" << delivery_task_id_now - 6 << "车道" << std::endl;
+      std::cout << "到达" << delivery_task_id_now - 5 << "车道" << std::endl;
 
       // TODO 执行取返回道车身动作，更新车道信息，更新delivery_carry_car_id
       auto temp = lane_in.rightmost_car.front();
