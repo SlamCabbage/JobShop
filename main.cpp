@@ -17,6 +17,7 @@ int main() {
   std::vector<int> power;
   std::vector<int> drive;
   std::vector<int> car_type;
+  std::queue<int> remain_car_index;
   const std::string data_path =
       "/Users/liaolizhou/Desktop/研究生/研究生学生工作/华为杯数学建模2022/code/"
       "JobShop/data/data.txt";
@@ -27,12 +28,11 @@ int main() {
     exit(1);
   }
   std::string lineStr;
-  getline(file, lineStr);
-  cout << lineStr << endl;
   while (getline(file, lineStr)) {
     std::stringstream ss(lineStr);
     std::string str;
     int i = 0;
+    int k = 0;
     while (getline(ss, str, ',')) {
       int cur = std::stoi(str);
       if (i == 0) {
@@ -41,6 +41,7 @@ int main() {
         drive.emplace_back(cur);
       } else {
         car_type.emplace_back(cur);
+        remain_car_index.emplace(k++);
       }
       i++;
     }
@@ -63,8 +64,8 @@ int main() {
     bool has_mission = v_deliver.judge_delivery_task_phase(lane);
     bool is_map_updated = false;
 
-    if (!has_mission) {                  //
-      if (!lane.rightmost_car.empty()) { // 若队列q不为空
+    if (!has_mission) {
+      if (!lane.rightmost_car.empty()) {
         // TODO 分配任务，取车放到返回道或者放到出车口
         v_deliver.assign_task(lane.rightmost_car, car_type);
       } else { // 队列q为空,更新地图
@@ -81,8 +82,22 @@ int main() {
       lane.UpdateLaneTime();
     }
 
+    bool is_reverse_map_updated = false;
     /// 4. 更新receiver状态，5.receiver判断情况
-    // bool receiver_phase = v_receiver.receiving_judge_task_phase();
+    bool r_has_mission = v_receiver.judge_receiver_task_phase(lane);
+    if (!r_has_mission) {
+      if (!lane.leftmost_car.empty()) {
+        v_receiver.assign_task(lane.leftmost_car, car_type);
+      } else {
+        lane.UpdateLaneTime(true);
+        is_reverse_map_updated = true;
+        if (!lane.leftmost_car.empty()) {
+          v_receiver.assign_task(lane.leftmost_car, car_type);
+        } else {
+
+        }
+      }
+    }
 
     t++;
   }

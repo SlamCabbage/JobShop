@@ -14,7 +14,7 @@ namespace job_shop {
     class Lane : public Base{
     public:
         // 车道保存的车辆信息
-        Eigen::Matrix<int, 7, 10> lane_car = Eigen::Matrix<int, 7, 10>::Zero();
+        Eigen::Matrix<int, 7, 10> lane_car = -1 * Eigen::Matrix<int, 7, 10>::Ones();
         // 车道保存的占用车辆时间信息
         Eigen::Matrix<int, 7, 10> lane_time = -1 * Eigen::Matrix<int, 7, 10>::Ones();
         // 车道占用信息，秒级别更新
@@ -30,7 +30,7 @@ namespace job_shop {
         // 更新一秒后的状态
         void UpdateLaneTime(bool revsere=false);
         // 添加新的车身
-        void AddCar(int index, int car_id);
+        void AddCar(int row, int car_id);
         // 翻转车身
         void ReverseCar(int car_type);
         // 重新添加翻转车身
@@ -38,7 +38,7 @@ namespace job_shop {
         // 删除车身
         void DeleteCar(int i, int j);
         // 记录车身所在位置
-        void recorder(std::ofstream& outFile, int reciver, int deliver, int sented, int index_next);
+        void recorder(std::ofstream& outFile, const int& reciver, const int& deliver, const int& sented, const int& index_next);
     };
 
 }// namespace job_shop
