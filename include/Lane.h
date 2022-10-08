@@ -25,8 +25,6 @@ namespace job_shop {
         // 用一个列表表示到左端的信息
         std::queue<std::pair<int, std::pair<int, int>>> leftmost_car;
 
-        int aa = 0;
-
     public:
         // 更新一秒后的状态
         void UpdateLaneTime(bool revsere=false);

@@ -3,7 +3,12 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <ctime>
+#include <random>
+
 #include "include/Lane.h"
+#include "include/v_delivery_traverse_machine.h"
+#include "include/v_receiving_traverse_machine.h"
 
 using namespace std;
 
@@ -22,7 +27,7 @@ int main() {
     getline(file, lineStr);
     cout << lineStr << endl;
     while (getline(file, lineStr)) {
-        cout << lineStr << endl;
+//        cout << lineStr << endl;
         std::stringstream ss(lineStr);
         std::string str;
         int i = 0;
@@ -39,6 +44,9 @@ int main() {
         }
     }
     cout << power.size() << " " << drive.size() << " " << car_type.size() << endl;
+
+    default_random_engine random_generator;
+    uniform_int_distribution<unsigned> scope(0, 9);
 
     return 0;
 }

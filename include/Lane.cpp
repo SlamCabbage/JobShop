@@ -100,7 +100,7 @@ namespace job_shop {
         lane_car(i, j) = 0;
         lane_time(i, j) = -1;
     }
-    // 翻转车身
+    // deliver翻转车身
     void Lane::ReverseCar(int car_type) {
         if (lane_occupancy(6) != 0) {
             std::cerr << "反向车道已经有车辆" << std::endl;
@@ -110,7 +110,7 @@ namespace job_shop {
         lane_occupancy(6) = 1;
         lane_car(6, 0) = car_type;
     }
-    // 重新添加翻转车身
+    // recevier重新添加翻转车身
     void Lane::AddReverseCar() {
         if (lane_car(6, 9) == 0) {
             std::cerr << "反向车道并没有车辆" << std::endl;

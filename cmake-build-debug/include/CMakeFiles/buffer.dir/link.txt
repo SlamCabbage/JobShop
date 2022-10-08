@@ -1,2 +1,0 @@
-/usr/bin/ar qc libbuffer.a CMakeFiles/buffer.dir/Lane.cpp.o CMakeFiles/buffer.dir/v_delivery_traverse_machine.cpp.o CMakeFiles/buffer.dir/v_receiving_traverse_machine.cpp.o
-/usr/bin/ranlib libbuffer.a
