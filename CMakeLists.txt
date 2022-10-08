@@ -8,6 +8,7 @@ include_directories(${EIGEN3_INCLUDE_DIRS})
 
 aux_source_directory(. DIR_SRCS)
 add_subdirectory(include)
+
 add_executable(jobshop ${DIR_SRCS})
 
 target_link_libraries(jobshop buffer)

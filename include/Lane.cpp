@@ -3,6 +3,8 @@
 //
 
 #include "Lane.h"
+#include <fstream>
+#include <iostream>
 
 namespace job_shop {
     // 更新一秒后的状态
@@ -30,8 +32,7 @@ namespace job_shop {
                         } else if (lane_time(i, j) == -2 && lane_time(i, j - 1) == -1) {
                             // 占用解除了
                             lane_time(i, j) = 0;
-                        } else if (lane_time(i, j) < 8 && lane_time(i, j) >= 0
-                                   && lane_time(i, j - 1) < 8 && lane_time(i, j - 1) >= 0) {
+                        } else if (lane_time(i, j) < 8 && lane_time(i, j) >= 0 && lane_time(i, j - 1) < 8 && lane_time(i, j - 1) >= 0) {
                             // 前方有一个车，但是前方的车并未阻塞
                             lane_time(i, j)++;
                         } else if (lane_time(i, j) < 8 && lane_time(i, j) >= 0 && lane_time(i, j - 1) == -1) {
@@ -99,6 +100,7 @@ namespace job_shop {
         }
         lane_car(i, j) = 0;
         lane_time(i, j) = -1;
+        rightmost_car.pop();
     }
     // deliver翻转车身
     void Lane::ReverseCar(int car_type) {
@@ -118,5 +120,43 @@ namespace job_shop {
         }
         lane_car(6, 9) = 0;
         lane_time(6, 9) = -1;
+        leftmost_car.pop();
+    }
+    /*
+     param:
+     1. outFile ： 写入文件的变量
+     2. reciver ： reciver当前所搭载的车身序号
+     3. deliver ： deliver当前所搭载的车身序号
+     4. sented  ： 刚刚传输出去的车身
+     5. index_next ： 输入vector中的后一个
+     * */
+    void Lane::recorder(std::ofstream& outFile, int reciver, int deliver, int sented, int index_next) {
+        result_cur = -1 * Eigen::Vector<int, 318>::Ones();
+        for (int i = 0; i < 7; ++i) {
+            for (int j = 0; j < 10; ++j) {
+                int car_id = lane_car(i, j);
+                if (car_id != 0) {
+                    std::string s = std::to_string(i) + std::to_string(j);
+                    result_cur(car_id) = std::stoi(s);
+                }
+            }
+        }
+        result_cur(sented) = 3;
+        result_cur(reciver) = 1;
+        result_cur(deliver) = 2;
+        result_cur(index_next) = 0;
+        for (int i = 0; i < result_cur.size(); ++i) {
+            if (result_cur(i) == -1) {
+                outFile << " "
+                        << ",";
+                continue;
+            }
+            if (i == result_cur.size() - 1) {
+                outFile << result_cur(i);
+                break;
+            }
+            outFile << result_cur(i) << ",";
+        }
+        outFile << std::endl;
     }
 }// namespace job_shop

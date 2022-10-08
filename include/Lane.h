@@ -7,7 +7,6 @@
 #include "Base.h"
 #include "Eigen/Core"
 #include "Eigen/Eigen"
-#include <iostream>
 #include <queue>
 
 namespace job_shop {
@@ -24,6 +23,8 @@ namespace job_shop {
         std::queue<std::pair<int, std::pair<int, int>>> rightmost_car;
         // 用一个列表表示到左端的信息
         std::queue<std::pair<int, std::pair<int, int>>> leftmost_car;
+        // 结果矩阵
+        Eigen::Vector<int, 318> result_cur;
 
     public:
         // 更新一秒后的状态
@@ -36,6 +37,8 @@ namespace job_shop {
         void AddReverseCar();
         // 删除车身
         void DeleteCar(int i, int j);
+        // 记录车身所在位置
+        void recorder(std::ofstream& outFile, int reciver, int deliver, int sented, int index_next);
     };
 
 }// namespace job_shop
