@@ -10,7 +10,7 @@
 
 using namespace std;
 
-Eigen::Matrix<int, 800, 1> Task = 12 * Eigen::Matrix<int, 800, 1>::Ones();
+Eigen::Matrix<int, 8000, 1> Task = 12 * Eigen::Matrix<int, 8000, 1>::Ones();
 
 int main() {
   // 读取data
@@ -54,7 +54,7 @@ int main() {
   job_shop::Lane lane;
 
   int car_num = static_cast<int>(power.size());
-  int deliver_task_index = 400;
+  int deliver_task_index = 4000;
   int recevier_task_index = 0;
   // 当前时刻t
   int t = 0;
@@ -65,14 +65,17 @@ int main() {
     /// 1. 更新deliver状态 and 2.deliver前向任务情况
     bool has_mission = v_deliver.judge_delivery_task_phase(lane, car_type);
     bool is_map_updated = false;
+//    cout << "1. 更新deliver状态完毕" << endl;
 
     if (!has_mission) {
       if (!lane.rightmost_car.empty()) {
         // 分配任务并存储到Task向量中
+        cout << "不为空"<<endl;
         int task_index = v_deliver.assign_task(lane.rightmost_car, car_type);
         Task(deliver_task_index++) = task_index;
       } else { // 队列q为空,更新地图
         lane.UpdateLaneTime();
+//        cout << "77更新地图" << endl;
         is_map_updated = true;
         if (!lane.rightmost_car.empty()) {
           // 分配任务并存储到Task向量中
@@ -80,20 +83,25 @@ int main() {
           Task(deliver_task_index++) = task_index;
         }
       }
+//      cout << "2. 分配任务完毕" << endl;
     }
+
     /// 3. 判断是否已经更新地图
     if (!is_map_updated) {
+//      cout << "3. 开始执行地图更新" << endl;
       lane.UpdateLaneTime();
+//      cout << "92更新地图" << endl;
     }
 
     bool is_reverse_map_updated = false;
     /// 4. 更新receiver状态，5.receiver判断情况
     bool r_has_mission = v_receiver.judge_receiver_task_phase(lane);
+//    cout << "4. 更新receiver状态完成" << endl;
     if (!r_has_mission) {
       if (!lane.leftmost_car.empty()) {
         // 首先判断是否还有返回车道的任务，有的话则优先完成返回车道任务
         int task_index = v_receiver.assign_task(lane, car_type);
-        Task[recevier_task_index++] = task_index;
+        if(task_index != -1) Task[recevier_task_index++] = task_index;
       } else {
         // 没有返回车道任务，则更新返回车道的状态
         lane.UpdateLaneTime(true);
@@ -102,19 +110,21 @@ int main() {
         if (!lane.leftmost_car.empty()) {
           // 如果不为空，则优先接返回车道的任务
           int task_index = v_receiver.assign_task(lane, car_type);
-          Task[recevier_task_index++] = task_index;
+          if(task_index != -1) Task[recevier_task_index++] = task_index;
         } else {
           // 如果还是为空，则去接顺序的任务;
           // 判断顺序任务是否存在，如果有则安排，没有则不安排
           if(!remain_car_index.empty()) Task[recevier_task_index++] = v_receiver.assign_task(remain_car_index, car_type, lane);
         }
       }
+//      cout << "5. receiver分配任务完成" << endl;
     }
     /// 5. 更新返回车道的状态
     if(!is_reverse_map_updated) {
       lane.UpdateLaneTime(true);
     }
-
+//    cout << "当前时间: " << t << "\n" << "执行进度：" << v_deliver.delivered_car_index.empty() << " / " <<  car_num << endl;
+    cout << lane.lane_time << endl;
     t++;
   }
 

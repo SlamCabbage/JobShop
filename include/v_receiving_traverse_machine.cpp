@@ -38,13 +38,13 @@ bool v_receiving_traverse_machine::judge_receiver_task_phase(Lane &lane_in) {
         lane_in.AddCar(receiving_task_id_now + 1, carry_car_id);
         this->carry_car_id = -1;
 
-        std::cout << "到达" << this->receiving_task_id_now + 1 << "车道"
-                  << std::endl;
+//        std::cout << "到达" << this->receiving_task_id_now + 1 << "车道"
+//                  << std::endl;
       } else if (
           this->receiving_t_now ==
           receiving_task_id_time
               [this->receiving_task_id_now]) { // 接车横移机回到4车道（起点）----空闲
-        std::cout << "返回" << 4 << "车道" << std::endl;
+//        std::cout << "返回" << 4 << "车道" << std::endl;
 
         this->receiving_t_now = 0;
         this->receiving_t_task = 0;
@@ -53,7 +53,7 @@ bool v_receiving_traverse_machine::judge_receiver_task_phase(Lane &lane_in) {
         // TODO 根据车道信息，决定是否处理返回道
         return false;
       } else {
-        std::cout << "正前往车道放车或者正返回起点途中。" << std::endl;
+//        std::cout << "正前往车道放车或者正返回起点途中" << std::endl;
       }
     }
     // 当前任务为7-12个，取返回道的车的车放入某车道
@@ -67,8 +67,8 @@ bool v_receiving_traverse_machine::judge_receiver_task_phase(Lane &lane_in) {
           lane_in.AddCar(receiving_task_id_now - 5, carry_car_id);
           this->carry_car_id = -1;
 
-          std::cout << "到达" << this->receiving_task_id_now - 5 << "车道"
-                    << std::endl;
+//          std::cout << "到达" << this->receiving_task_id_now - 5 << "车道"
+//                    << std::endl;
         } else if (this->receiving_t_now == 3) {
 
           // TODO 执行取返回道车身动作，更新车道信息
@@ -76,9 +76,9 @@ bool v_receiving_traverse_machine::judge_receiver_task_phase(Lane &lane_in) {
           this->carry_car_id = temp.first;
           lane_in.AddReverseCar();
 
-          std::cout << "到达返回车道" << std::endl;
+//          std::cout << "到达返回车道" << std::endl;
         } else {
-          std::cout << "正前往车道放车或者正返回起点途中。" << std::endl;
+//          std::cout << "正前往车道放车或者正返回起点途中" << std::endl;
         }
       } else if (this->receiving_task_id_now >= 6 &&
                  this->receiving_task_id_now < 10) {
@@ -88,17 +88,17 @@ bool v_receiving_traverse_machine::judge_receiver_task_phase(Lane &lane_in) {
           // todo 执行放车动作，更新车道信息
           lane_in.AddCar(receiving_task_id_now - 5, carry_car_id);
           this->carry_car_id = -1;
-          std::cout << "到达" << this->receiving_task_id_now - 5 << "车道"
-                    << std::endl;
+//          std::cout << "到达" << this->receiving_task_id_now - 5 << "车道"
+//                    << std::endl;
         } else if (this->receiving_t_now == 3) {
 
           // TODO 执行取返回道车身动作，更新车道信息
           auto temp = lane_in.leftmost_car.front();
           this->carry_car_id = temp.first;
           lane_in.AddReverseCar();
-          std::cout << "到达返回车道" << std::endl;
+//          std::cout << "到达返回车道" << std::endl;
         } else {
-          std::cout << "正前往车道放车或者正返回起点途中。" << std::endl;
+//          std::cout << "正前往车道放车或者正返回起点途中" << std::endl;
         }
       }
     } else { // 空闲
@@ -114,12 +114,12 @@ bool v_receiving_traverse_machine::judge_receiver_task_phase(Lane &lane_in) {
         lane_in.AddCar(receiving_task_id_now + 1, carry_car_id);
         this->carry_car_id = -1;
 
-        std::cout << "到达" << this->receiving_task_id_now + 1 << "车道"
-                  << std::endl;
+//        std::cout << "到达" << this->receiving_task_id_now + 1 << "车道"
+//                  << std::endl;
       } else if (this->receiving_t_now ==
                  receiving_task_id_time[this->receiving_task_id_now] / 2 +
                      time_add_wait) { // 接车横移机回到4车道（起点）----空闲
-        std::cout << "返回" << 4 << "车道" << std::endl;
+//        std::cout << "返回" << 4 << "车道" << std::endl;
 
         this->receiving_t_now = 0;
         this->receiving_t_task = 0;
@@ -129,7 +129,7 @@ bool v_receiving_traverse_machine::judge_receiver_task_phase(Lane &lane_in) {
         // TODO 根据车道信息，决定是否处理返回道
         return false;
       } else {
-        std::cout << "正前往车道放车或者正返回起点途中。" << std::endl;
+//        std::cout << "正前往车道放车或者正返回起点途中" << std::endl;
       }
     }
     // 当前任务为7-12个，取返回道的车的车放入某车道
@@ -142,8 +142,8 @@ bool v_receiving_traverse_machine::judge_receiver_task_phase(Lane &lane_in) {
           lane_in.AddCar(receiving_task_id_now - 5, carry_car_id);
           this->carry_car_id = -1;
 
-          std::cout << "到达" << this->receiving_task_id_now - 5 << "车道"
-                    << std::endl;
+//          std::cout << "到达" << this->receiving_task_id_now - 5 << "车道"
+//                    << std::endl;
         } else if (this->receiving_t_now == 3) {
 
           // TODO 执行取返回道车身动作，更新车道信息
@@ -151,12 +151,12 @@ bool v_receiving_traverse_machine::judge_receiver_task_phase(Lane &lane_in) {
           this->carry_car_id = temp.first;
           lane_in.AddReverseCar();
 
-          std::cout << "到达返回车道" << std::endl;
+//          std::cout << "到达返回车道" << std::endl;
         } else if (this->receiving_t_now ==
                    receiving_task_id_time[this->receiving_task_id_now] / 2 +
                        time_add_wait -
                        3) { // 接车横移机回到4车道（起点）----空闲
-          std::cout << "返回" << 4 << "车道" << std::endl;
+//          std::cout << "返回" << 4 << "车道" << std::endl;
 
           this->receiving_t_now = 0;
           this->receiving_t_task = 0;
@@ -165,7 +165,7 @@ bool v_receiving_traverse_machine::judge_receiver_task_phase(Lane &lane_in) {
 
           return false;
         } else {
-          std::cout << "正前往车道放车或者正返回起点途中。" << std::endl;
+//          std::cout << "正前往车道放车或者正返回起点途中" << std::endl;
         }
       } else if (this->receiving_task_id_now >= 6 &&
                  this->receiving_task_id_now < 10) {
@@ -173,19 +173,19 @@ bool v_receiving_traverse_machine::judge_receiver_task_phase(Lane &lane_in) {
             time_add_wait) { // 接车横移机到达要放置车身车道
           lane_in.AddCar(receiving_task_id_now - 5, carry_car_id);
           this->carry_car_id = -1;
-          std::cout << "到达" << this->receiving_task_id_now - 5 << "车道"
-                    << std::endl;
+//          std::cout << "到达" << this->receiving_task_id_now - 5 << "车道"
+//                    << std::endl;
         } else if (this->receiving_t_now == 3) {
 
           // TODO 执行取返回道车身动作，更新车道信息
           auto temp = lane_in.leftmost_car.front();
           this->carry_car_id = temp.first;
           lane_in.AddReverseCar();
-          std::cout << "到达返回车道" << std::endl;
+//          std::cout << "到达返回车道" << std::endl;
         } else if (this->receiving_t_now ==
                    receiving_task_id_time[this->receiving_task_id_now] / 2 +
                        time_add_wait) { // 接车横移机回到4车道（起点）----空闲
-          std::cout << "返回" << 4 << "车道" << std::endl;
+//          std::cout << "返回" << 4 << "车道" << std::endl;
 
           this->receiving_t_now = 0;
           this->receiving_t_task = 0;
@@ -194,7 +194,7 @@ bool v_receiving_traverse_machine::judge_receiver_task_phase(Lane &lane_in) {
 
           return false;
         } else {
-          std::cout << "正前往车道放车或者正返回起点途中。" << std::endl;
+//          std::cout << "正前往车道放车或者正返回起点途中" << std::endl;
         }
       }
     } else { // 空闲
@@ -210,12 +210,15 @@ bool v_receiving_traverse_machine::judge_receiver_task_phase(Lane &lane_in) {
 int v_receiving_traverse_machine::assign_task(Lane &lane_in,
                                               std::vector<int> &car_type_) {
   // 给receiver分配一个任务（6-12）：根据时间优先级进行分配车道
-  int min_task = 9;
+  int min_task = 100;
   int min_time = 100;
   int time;
   for (int i = 0; i < 6; ++i) {
     if (i == 4 || i == 5) {
       time = lane_in.lane_time(i, 9);
+      if(time == -1) time = 0;
+      else if(time == -2) continue;
+      else time = 9 - time;
       if (time <= receiving_task_id_time[6 + i] / 2) {
         // 在当前位置移到下一位置后才到达
         if (time < min_time) {
@@ -232,6 +235,9 @@ int v_receiving_traverse_machine::assign_task(Lane &lane_in,
       }
     } else {
       time = lane_in.lane_time(i, 9);
+      if(time == -1) time = 0;
+      else if(time == -2) continue;
+      else time = 9 - time;
       if (time <= receiving_task_id_time[6 + i] / 2 + 3) {
         if (time <= min_time) {
           min_time = receiving_task_id_time[6 + i];
@@ -247,8 +253,17 @@ int v_receiving_traverse_machine::assign_task(Lane &lane_in,
       }
     }
   }
-  receiving_task_id_now = min_task;
-  time_add_wait = min_time - receiving_task_id_time[min_task] / 2;
+  if(min_task != 900) {
+    receiving_task_id_now = min_task;
+    time_add_wait = min_time - receiving_task_id_time[min_task] / 2 ==
+                            receiving_task_id_time[min_task] / 2
+                        ? -1
+                        : min_time - receiving_task_id_time[min_task] / 2;
+  }else{
+    receiving_task_id_now = 12;
+    time_add_wait = -1;
+    return -1;
+  }
   return min_task;
 }
 
@@ -260,11 +275,14 @@ int v_receiving_traverse_machine::assign_task(std::queue<int> &q_in,
   q_in.pop();
   // 按顺序进行获取涂装PBS上的车身index
   carry_car_id = car_type_[temp_index];
-  int min_task = 9;
+  int min_task = 900;
   int min_time = 100;
   int time;
   for (int i = 0; i < 6; ++i) {
     time = lane_in.lane_time(i, 9);
+    if(time == -1) time = 0;
+    else if(time == -2) continue;
+    else time = 9 - time;
     if (time <= receiving_task_id_time[i] / 2) {
       // 在当前位置移到下一位置后才到达
       if (time < min_time) {
@@ -274,17 +292,24 @@ int v_receiving_traverse_machine::assign_task(std::queue<int> &q_in,
     } else {
       // 当前位置移到下一位置之前就已经到达了
       time = receiving_task_id_time[i] / 2 + time;
+      if(time == -1) time = 0;
+      else if(time == -2) continue;
+      else time = 9 - time;
       if (time < min_time) {
         min_time = time;
         min_task = i;
       }
     }
   }
-  receiving_task_id_now = min_task;
-  time_add_wait = min_time - receiving_task_id_time[min_task] / 2 ==
-                          receiving_task_id_time[min_task] / 2
-                      ? -1
-                      : min_time - receiving_task_id_time[min_task] / 2;
+  if(min_task != 900) {
+    receiving_task_id_now = min_task;
+    time_add_wait = min_time - receiving_task_id_time[min_task] / 2;
+  }else{
+    receiving_task_id_now = 12;
+    time_add_wait = -1;
+    return -1;
+  }
+
   return min_task;
 }
 
