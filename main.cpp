@@ -10,9 +10,9 @@
 
 using namespace std;
 
-int main() {
-  srand((int)time(0));
+Eigen::Matrix<int, 800, 1> Task = 12 * Eigen::Matrix<int, 800, 1>::Ones();
 
+int main() {
   // 读取data
   std::vector<int> power;
   std::vector<int> drive;
@@ -53,30 +53,34 @@ int main() {
   job_shop::v_delivery_traverse_machine v_deliver;
   job_shop::Lane lane;
 
+  int car_num = static_cast<int>(power.size());
+  int deliver_task_index = 400;
+  int recevier_task_index = 0;
   // 当前时刻t
-
   int t = 0;
   // 判断是否完成任务
-  while (1) {
+  while (v_deliver.delivered_car_index.empty() != car_num) {
 
     // 更新并判断送车横移机状态，1表示当前时刻有任务，不需要分配任务，0表示当前时刻空闲，需要后续分配任务
     /// 1. 更新deliver状态 and 2.deliver前向任务情况
-    bool has_mission = v_deliver.judge_delivery_task_phase(lane);
+    bool has_mission = v_deliver.judge_delivery_task_phase(lane, car_type);
     bool is_map_updated = false;
 
     if (!has_mission) {
       if (!lane.rightmost_car.empty()) {
-        // TODO 分配任务，取车放到返回道或者放到出车口
-        v_deliver.assign_task(lane.rightmost_car, car_type);
+        // 分配任务并存储到Task向量中
+        int task_index = v_deliver.assign_task(lane.rightmost_car, car_type);
+        Task(deliver_task_index++) = task_index;
       } else { // 队列q为空,更新地图
         lane.UpdateLaneTime();
         is_map_updated = true;
         if (!lane.rightmost_car.empty()) {
-          v_deliver.assign_task(lane.rightmost_car, car_type);
+          // 分配任务并存储到Task向量中
+          int task_index = v_deliver.assign_task(lane.rightmost_car, car_type);
+          Task(deliver_task_index++) = task_index;
         }
       }
     }
-
     /// 3. 判断是否已经更新地图
     if (!is_map_updated) {
       lane.UpdateLaneTime();
@@ -87,16 +91,28 @@ int main() {
     bool r_has_mission = v_receiver.judge_receiver_task_phase(lane);
     if (!r_has_mission) {
       if (!lane.leftmost_car.empty()) {
-        v_receiver.assign_task(lane.leftmost_car, car_type);
+        // 首先判断是否还有返回车道的任务，有的话则优先完成返回车道任务
+        int task_index = v_receiver.assign_task(lane, car_type);
+        Task[recevier_task_index++] = task_index;
       } else {
+        // 没有返回车道任务，则更新返回车道的状态
         lane.UpdateLaneTime(true);
         is_reverse_map_updated = true;
+        // 判断更新后的返回车道是否有任务即是否为空
         if (!lane.leftmost_car.empty()) {
-          v_receiver.assign_task(lane.leftmost_car, car_type);
+          // 如果不为空，则优先接返回车道的任务
+          int task_index = v_receiver.assign_task(lane, car_type);
+          Task[recevier_task_index++] = task_index;
         } else {
-
+          // 如果还是为空，则去接顺序的任务;
+          // 判断顺序任务是否存在，如果有则安排，没有则不安排
+          if(!remain_car_index.empty()) Task[recevier_task_index++] = v_receiver.assign_task(remain_car_index, car_type, lane);
         }
       }
+    }
+    /// 5. 更新返回车道的状态
+    if(!is_reverse_map_updated) {
+      lane.UpdateLaneTime(true);
     }
 
     t++;
