@@ -20,11 +20,11 @@ double job_shop::calculate_fitness::fitness(std::vector<int> &result_out_ ,std::
         drive_.push_back(isFourwheel);
     }
 
-    double fitness = 100;
+    double fitnes_score = 0;
     //返回道扣分
-    double back_road_dp = 0.2*back_road_used_time_;
+    double score_back_road = 20 - 0.2*back_road_used_time_;
     //时间扣分
-    double overtime_dp = 0.1*(100 - 0.01*(time_cost - 9 * 318 - 72));
+    double score_time = 0.1*(100 - 0.01*(time_cost - 9 * 318 - 72));
 
     //四驱转换扣分
     int turntime;
@@ -84,9 +84,9 @@ double job_shop::calculate_fitness::fitness(std::vector<int> &result_out_ ,std::
     }
 
 
+    fitnes_score = score_power + score_dirve +score_back_road + score_time;
 
-
-    return fitness;
+    return fitnes_score;
 
 
 

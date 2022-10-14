@@ -9,7 +9,7 @@
 
 namespace job_shop{
     class calculate_fitness {
-
+    public:
         double fitness(std::vector<int> &result_out_,std::vector<int> car_type_,int time_cost,int back_road_used_time_);
 
     };

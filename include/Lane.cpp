@@ -21,18 +21,20 @@ namespace job_shop {
                             // 车辆
                             lane_car(i, j - 1) = lane_car(i, j);
                             lane_car(i, j) = -1;
-                            if (j - 1 == 0) {
+                            if (j == 1) {
                                 // 如果新到的为1号车位，那么将其作为阻塞
                                 lane_time(i, j - 1) = -2;
-                                rightmost_car.push({lane_car(i, j - 1), {i, j - 1}});
+                                this->rightmost_car.push({lane_car(i, 0), {i, 0}});
+//                                std::cout << "rightmost_car不为空" << std::endl;
                             }
                             if (j == 9) {
                                 lane_occupancy(i) = 0;
                             }
-                        } else if (lane_time(i, j) == -2 && lane_time(i, j - 1) == -1) {
+                        } else if (lane_time(i, j) == -2 && lane_time(i, j - 1) != -2) {
                             // 占用解除了
-                            lane_time(i, j) = 0;
-                        } else if (lane_time(i, j) < 8 && lane_time(i, j) >= 0 && lane_time(i, j - 1) < 8 && lane_time(i, j - 1) >= 0) {
+                            lane_time(i, j) = 1;
+                        } else if (lane_time(i, j) < 8 && lane_time(i, j) >= 0 && lane_time(i, j - 1) <= 8 &&
+                                   lane_time(i, j - 1) >= 0) {
                             // 前方有一个车，但是前方的车并未阻塞
                             lane_time(i, j)++;
                         } else if (lane_time(i, j) < 8 && lane_time(i, j) >= 0 && lane_time(i, j - 1) == -1) {
@@ -70,51 +72,86 @@ namespace job_shop {
                     } else if (lane_time(6, j) < 8 && lane_time(6, j) >= 0 && lane_time(6, j + 1) == -1) {
                         lane_time(6, j)++;
                     } else if (lane_time(6, j) < 8 && lane_time(6, j) >= 0 &&
-                               lane_time(6, j + 1) < 8 && lane_time(6, j + 1) >= 0) {
+                               lane_time(6, j + 1) <= 8 && lane_time(6, j + 1) >= 0) {
                         lane_time(6, j)++;
                     }
                 }
             }
         }
 
+        for (int i = 0; i < 6; ++i) {
+            if (lane_time(i,0) == -2){
+                for (int j = 1; j < 10; ++j) {
+
+                    if (lane_time(i,j)!= -1){
+                        lane_time(i,j) = -2;
+                    }else{
+                        break;
+                    }
+                }
+
+            }
+        }
+
+
         // 反向车道
     }
+
     // 添加新的车身
-    void Lane::AddCar(int row, int car_id) {
-        if (lane_occupancy(row) != 0) {
-            std::cerr << "占用的车道不能传入车辆" << std::endl;
+    void Lane::AddCar(int row, int car_id, int t) {
+        if (lane_time(row, 9) != -1) {
+            std::cerr << t << " " << row << "车道被占用，不能传入车辆" << car_id << std::endl;
+            std::cerr << lane_time(row, 9) << std::endl;
             return;
         }
         lane_time(row, 9) = 0;
         lane_occupancy(row) = 1;
         lane_car(row, 9) = car_id;
     }
+
     // 删除车身
     void Lane::DeleteCar(int i, int j) {
         if (lane_car(i, j) == -1) {
-            std::cerr << "该车道并没有车辆" << std::endl;
+            std::cerr << "第" << i << "车道并没有车辆" << std::endl;
             return;
-        } else if (j < 9) {
+        } else if (j > 9) {
             std::cerr << "车道只能是第十个车道" << std::endl;
             return;
+        } else {
+            lane_car(i, 0) = -1;
+//            std::cout << " DeleteCar" << std::endl;
+            //std::cout << lane_time(i, 0) << std::endl;
+            lane_time(i, 0) = -1;
+            //std::cout << lane_time(i, 0) << std::endl;
+
+//            for (int k = 1; k < 10; ++k) {
+//                if (lane_time(i,k)!=-1){
+//                    lane_time(i,k) = -3;
+//                }else{
+//                    break;
+//                }
+//            }
+
+
+            rightmost_car.pop();
         }
-        lane_car(i, j) = -1;
-        lane_time(i, j) = -1;
-        rightmost_car.pop();
+
     }
+
     // deliver翻转车身
-    void Lane::ReverseCar(int car_type) {
-        if (lane_occupancy(6) != 0) {
-            std::cerr << "反向车道已经有车辆" << std::endl;
+    void Lane::ReverseCar(int car_type, int t) {
+        if (lane_time(6, 0) != -1) {
+            std::cerr << "反向车道已经有车辆:" << t << std::endl;
             return;
         }
         lane_time(6, 0) = 0;
         lane_occupancy(6) = 1;
         lane_car(6, 0) = car_type;
     }
+
     // recevier重新添加翻转车身
     void Lane::AddReverseCar() {
-        if (lane_car(6, 9) == -1) {
+        if (lane_time(6, 9) == -1) {
             std::cerr << "反向车道并没有车辆" << std::endl;
             return;
         }
@@ -122,6 +159,7 @@ namespace job_shop {
         lane_time(6, 9) = -1;
         leftmost_car.pop();
     }
+
     /*
      param:
      1. outFile ： 写入文件的变量
@@ -130,8 +168,9 @@ namespace job_shop {
      4. sented  ： 刚刚传输出去的车身
      5. index_next ： 输入vector中的后一个
      * */
-    void Lane::recorder(std::ofstream& outFile, const int& reciver, const int& deliver, const int& sented, const int& index_next) {
-        result_cur = -1 * Eigen::Vector<int, 318>::Ones();
+    void Lane::recorder(std::ofstream &outFile, const int &reciver, const int &deliver, const int &sented,
+                        const int &index_next) {
+        result_cur = -1 * Eigen::Matrix<int, 318, 1>::Ones();
         for (int i = 0; i < 7; ++i) {
             for (int j = 0; j < 10; ++j) {
                 int car_id = lane_car(i, j);
@@ -141,10 +180,10 @@ namespace job_shop {
                 }
             }
         }
-        if(sented != -1) result_cur(sented) = 3;
-        if(reciver != -1) result_cur(reciver) = 1;
-        if(deliver != -1) result_cur(deliver) = 2;
-        if(index_next != -1) result_cur(index_next) = 0;
+        if (sented != -1) result_cur(sented) = 3;
+        if (reciver != -1) result_cur(reciver) = 1;
+        if (deliver != -1) result_cur(deliver) = 2;
+        if (index_next != -1) result_cur(index_next) = 0;
         for (int i = 0; i < result_cur.size(); ++i) {
             if (result_cur(i) == -1) {
                 outFile << " "
